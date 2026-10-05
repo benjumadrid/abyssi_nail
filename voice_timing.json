@@ -1,0 +1,62 @@
+[
+  {
+    "id": "scene1",
+    "path": "voice_clips\\scene1.mp3",
+    "duration": 6.6,
+    "text": "Welcome to Beauty Abyssi! Let's scroll down to explore our luxury nail and pedicure treatments."
+  },
+  {
+    "id": "scene2_hand",
+    "path": "voice_clips\\scene2_hand.mp3",
+    "duration": 6.12,
+    "text": "Filter by Hand nails to browse classic manicures, gel, French tips, and cat-eye art."
+  },
+  {
+    "id": "scene2_pedi",
+    "path": "voice_clips\\scene2_pedi.mp3",
+    "duration": 4.7,
+    "text": "Or explore our Pedicures for relaxing foot care and luxury designs."
+  },
+  {
+    "id": "scene2_inspo",
+    "path": "voice_clips\\scene2_inspo.mp3",
+    "duration": 6.02,
+    "text": "Have a design from Pinterest or TikTok? We bring any custom nail photo to life!"
+  },
+  {
+    "id": "scene3_book",
+    "path": "voice_clips\\scene3_book.mp3",
+    "duration": 5.45,
+    "text": "Let's book Classic Manicure! Simply click 'Book' right on the treatment card."
+  },
+  {
+    "id": "scene4_combo",
+    "path": "voice_clips\\scene4_combo.mp3",
+    "duration": 6.98,
+    "text": "Classic Manicure is selected. You can combine a Pedicure, or attach custom photo references."
+  },
+  {
+    "id": "scene5_date",
+    "path": "voice_clips\\scene5_date.mp3",
+    "duration": 3.12,
+    "text": "Choose your preferred appointment date on the calendar."
+  },
+  {
+    "id": "scene6_details",
+    "path": "voice_clips\\scene6_details.mp3",
+    "duration": 5.71,
+    "text": "Enter your full name, active phone number, and your village: Kombolcha, Shisha Ber."
+  },
+  {
+    "id": "scene7_submit",
+    "path": "voice_clips\\scene7_submit.mp3",
+    "duration": 4.87,
+    "text": "Add your shape or polish notes, and tap 'Confirm & Register Online'!"
+  },
+  {
+    "id": "scene8_confirm",
+    "path": "voice_clips\\scene8_confirm.mp3",
+    "duration": 7.08,
+    "text": "You're officially registered! Tap 'Direct Chat' to message the artist on Telegram. Done!"
+  }
+]

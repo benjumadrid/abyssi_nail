@@ -1,0 +1,66 @@
+[
+  {
+    "id": "scene1_intro",
+    "title": "WELCOME",
+    "text": "Welcome to Beauty Abyssi! Here is how you can easily book your dream nail appointment online.",
+    "filename": "voice_inspo_s1.mp3",
+    "path": "voice_clips\\voice_inspo_s1.mp3",
+    "duration": 6.24
+  },
+  {
+    "id": "scene2_catalog",
+    "title": "SALON CATALOG",
+    "text": "You can browse all our services for hands and feet, and book any catalog treatment with just one click.",
+    "filename": "voice_inspo_s2.mp3",
+    "path": "voice_clips\\voice_inspo_s2.mp3",
+    "duration": 6.24
+  },
+  {
+    "id": "scene3_inspo_click",
+    "title": "PINTEREST & TIKTOK INSPO",
+    "text": "Or, if you found a design on Pinterest or TikTok, scroll to Bring Any Dream Inspo and tap Register with Inspo Image.",
+    "filename": "voice_inspo_s3.mp3",
+    "path": "voice_clips\\voice_inspo_s3.mp3",
+    "duration": 7.61
+  },
+  {
+    "id": "scene4_modal_group",
+    "title": "CUSTOM & GROUP DISCOUNT",
+    "text": "Your bespoke session is preselected. Coming with friends or bridal guests? Toggle Group Discount for special party rates!",
+    "filename": "voice_inspo_s4.mp3",
+    "path": "voice_clips\\voice_inspo_s4.mp3",
+    "duration": 8.86
+  },
+  {
+    "id": "scene5_upload_date",
+    "title": "ATTACH PHOTOS & PICK DATE",
+    "text": "Attach your inspiration screenshots so our artist prepares your exact charms and colors, then pick your date and time.",
+    "filename": "voice_inspo_s5.mp3",
+    "path": "voice_clips\\voice_inspo_s5.mp3",
+    "duration": 7.08
+  },
+  {
+    "id": "scene6_address",
+    "title": "CLIENT DETAILS & ADDRESS",
+    "text": "Enter your name, phone number, and location including your village, like Kombolcha, Shisha Bar.",
+    "filename": "voice_inspo_s6.mp3",
+    "path": "voice_clips\\voice_inspo_s6.mp3",
+    "duration": 6.31
+  },
+  {
+    "id": "scene7_submit",
+    "title": "SUBMIT REGISTRATION",
+    "text": "Add your shape or chrome notes, and tap Confirm and Register Online to submit your booking instantly.",
+    "filename": "voice_inspo_s7.mp3",
+    "path": "voice_clips\\voice_inspo_s7.mp3",
+    "duration": 6.05
+  },
+  {
+    "id": "scene8_confirm",
+    "title": "SUCCESSFUL RESERVATION",
+    "text": "You're all set! Your request is dispatched directly to our artist, and you can connect on Telegram. See you soon!",
+    "filename": "voice_inspo_s8.mp3",
+    "path": "voice_clips\\voice_inspo_s8.mp3",
+    "duration": 8.81
+  }
+]
