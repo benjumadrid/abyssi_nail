@@ -372,34 +372,25 @@ router.get('/history', async (req, res) => {
   try {
     const { phone } = req.query;
 
-    let result;
-    if (phone && phone.trim() !== '') {
-      let cleanPhone = phone.replace(/[\s\-\+]/g, '');
-      if (cleanPhone.startsWith('0')) cleanPhone = cleanPhone.substring(1);
-      if (cleanPhone.startsWith('251')) cleanPhone = cleanPhone.substring(3);
-
-      result = await pool.query(
-        `SELECT id, client_name, client_phone, client_email, client_address, category_type,
-                services_selected, TO_CHAR(appointment_date, 'YYYY-MM-DD') AS appointment_date,
-                appointment_time, is_wedding_or_group, group_size,
-                inspo_image_url, notes, group_members, status, cancellation_reason, negotiated_price, created_at
-         FROM registrations 
-         WHERE client_phone LIKE $1 OR client_phone LIKE $2
-         ORDER BY id DESC`,
-        [`%${cleanPhone}`, `%${phone.trim()}%`]
-      );
-    } else {
-      // By default: return latest 5 salon appointments
-      result = await pool.query(
-        `SELECT id, client_name, client_phone, client_email, client_address, category_type,
-                services_selected, TO_CHAR(appointment_date, 'YYYY-MM-DD') AS appointment_date,
-                appointment_time, is_wedding_or_group, group_size,
-                inspo_image_url, notes, group_members, status, cancellation_reason, negotiated_price, created_at
-         FROM registrations 
-         ORDER BY id DESC
-         LIMIT 5`
-      );
+    // If no phone number provided, return empty list (never expose other clients' bookings!)
+    if (!phone || phone.trim() === '') {
+      return res.json({ success: true, count: 0, data: [] });
     }
+
+    let cleanPhone = phone.replace(/[\s\-\+]/g, '');
+    if (cleanPhone.startsWith('0')) cleanPhone = cleanPhone.substring(1);
+    if (cleanPhone.startsWith('251')) cleanPhone = cleanPhone.substring(3);
+
+    const result = await pool.query(
+      `SELECT id, client_name, client_phone, client_email, client_address, category_type,
+              services_selected, TO_CHAR(appointment_date, 'YYYY-MM-DD') AS appointment_date,
+              appointment_time, is_wedding_or_group, group_size,
+              inspo_image_url, notes, group_members, status, cancellation_reason, negotiated_price, created_at
+       FROM registrations 
+       WHERE client_phone LIKE $1 OR client_phone LIKE $2
+       ORDER BY id DESC`,
+      [`%${cleanPhone}`, `%${phone.trim()}%`]
+    );
 
     const enriched = result.rows.map(item => {
       const formattedPhone = formatPhone(item.client_phone);

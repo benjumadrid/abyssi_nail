@@ -83,16 +83,24 @@ export default function Help({ defaultTab = null }) {
     const tab = defaultTab || searchParams.get('tab');
     if (tab === 'history') {
       setActiveTab('history');
-      fetchHistory(phoneQueryRef.current);
+      const savedPhone = localStorage.getItem('abyssi_client_phone') || '';
+      if (savedPhone) {
+        setPhoneQuery(savedPhone);
+        fetchHistory(savedPhone);
+      }
     } else if (tab === 'guide' || !tab) {
       setActiveTab('guide');
     }
   }, [searchParams, defaultTab]);
 
-  // Initial mount: load services and fetch recent bookings without populating the search field
+  // Initial mount: load services and restore client's own history only if booked on this device
   useEffect(() => {
     if (initialTab === 'history') {
-      fetchHistory('');
+      const savedPhone = localStorage.getItem('abyssi_client_phone') || '';
+      if (savedPhone) {
+        setPhoneQuery(savedPhone);
+        fetchHistory(savedPhone);
+      }
     }
 
     // Fetch services for booking modal
@@ -149,20 +157,20 @@ export default function Help({ defaultTab = null }) {
       console.warn('[Client SSE] Failed to connect to stream:', err);
     }
 
-    // Silent background poll every 3 seconds to guarantee zero missed cancellation updates
+    // Silent background poll every 4 seconds only if a phone number is actively being queried
     const pollInterval = setInterval(() => {
       if (activeTab === 'history') {
         const currentTarget = phoneQueryRef.current;
-        const url = currentTarget && currentTarget.trim() !== ''
-          ? `/api/registrations/history?phone=${encodeURIComponent(currentTarget.trim())}`
-          : `/api/registrations/history`;
-        axios.get(url).then(res => {
-          if (res.data?.success) {
-            setHistoryList(res.data.data);
-          }
-        }).catch(() => {});
+        if (currentTarget && currentTarget.trim() !== '') {
+          const url = `/api/registrations/history?phone=${encodeURIComponent(currentTarget.trim())}`;
+          axios.get(url).then(res => {
+            if (res.data?.success) {
+              setHistoryList(res.data.data);
+            }
+          }).catch(() => {});
+        }
       }
-    }, 3000);
+    }, 4000);
 
     return () => {
       if (eventSource) eventSource.close();
@@ -173,13 +181,20 @@ export default function Help({ defaultTab = null }) {
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setSearchParams(tab === 'history' ? { tab: 'history' } : {});
-    if (tab === 'history' && !hasSearched) {
+    if (tab === 'history' && !hasSearched && phoneQuery) {
       fetchHistory(phoneQuery);
     }
   };
 
   const fetchHistory = async (phoneToSearch, isSilent = false) => {
     const target = phoneToSearch !== undefined ? phoneToSearch : phoneQuery;
+
+    if (!target || target.trim() === '') {
+      setHistoryList([]);
+      setHistoryLoading(false);
+      setHasSearched(false);
+      return;
+    }
 
     if (!isSilent) {
       setSearchError('');
@@ -189,9 +204,7 @@ export default function Help({ defaultTab = null }) {
     }
 
     try {
-      const url = target && target.trim() !== ''
-        ? `/api/registrations/history?phone=${encodeURIComponent(target.trim())}`
-        : `/api/registrations/history`;
+      const url = `/api/registrations/history?phone=${encodeURIComponent(target.trim())}`;
 
       const res = await axios.get(url);
       if (res.data.success) {
@@ -621,7 +634,7 @@ export default function Help({ defaultTab = null }) {
                   Client Portal
                 </span>
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-900">
-                  View Your Last 5 Bookings
+                  Track Your Bookings
                 </h2>
                 <p className="text-xs text-stone-500">
                   Enter your registered phone number (e.g. 0956645851 or +251...) to see your scheduled sessions and their live confirmation status.
@@ -687,6 +700,18 @@ export default function Help({ defaultTab = null }) {
                   <span>Book Your First Session</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
+              </div>
+            ) : !hasSearched && historyList.length === 0 ? (
+              <div className="bg-white rounded-3xl p-10 text-center border border-stone-200/90 shadow-xs space-y-4">
+                <div className="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-400/30 flex items-center justify-center mx-auto text-amber-500">
+                  <Phone className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-xl font-bold text-stone-800">Track Your Personal Appointments</h3>
+                  <p className="text-xs text-stone-500 max-w-md mx-auto mt-1">
+                    Enter the phone number you registered with above to view your scheduled sessions and live artist confirmations.
+                  </p>
+                </div>
               </div>
             ) : historyList.length > 0 ? (
               <div className="space-y-4">
