@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { testConnection } from './config/db.js';
 import authRoutes from './routes/auth.js';
 import nailWorksRoutes from './routes/nailWorks.js';
@@ -77,18 +78,30 @@ app.use('/api/registrations', checkMaintenance, registrationsRoutes);
 app.use('/api/nail-works', nailWorksRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Root API info
-app.get('/', (req, res) => {
-  res.json({
-    message: '💅 Beauty Abyssi Nail House Backend API',
-    endpoints: {
-      health: '/api/health',
-      services: '/api/services',
-      registrations: '/api/registrations',
-      admin: '/api/admin',
-    },
+// Serve frontend static build in production (Render all-in-one deployment)
+const distPath = path.resolve('frontend/dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
   });
-});
+} else {
+  // Root API info fallback if frontend is not built
+  app.get('/', (req, res) => {
+    res.json({
+      message: '💅 Beauty Abyssi Nail House Backend API',
+      endpoints: {
+        health: '/api/health',
+        services: '/api/services',
+        registrations: '/api/registrations',
+        admin: '/api/admin',
+      },
+    });
+  });
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
