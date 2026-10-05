@@ -1,5 +1,6 @@
 import express from 'express';
 import { pool } from '../config/db.js';
+import { verifyPassword, hashPassword } from '../utils/security.js';
 
 const router = express.Router();
 
@@ -13,8 +14,8 @@ router.post('/login', async (req, res) => {
     }
 
     const result = await pool.query(
-      'SELECT id, username, name FROM admins WHERE username = $1 AND password = $2',
-      [username.trim(), password.trim()]
+      'SELECT id, username, name, password FROM admins WHERE username = $1',
+      [username.trim()]
     );
 
     if (result.rows.length === 0) {
@@ -22,6 +23,23 @@ router.post('/login', async (req, res) => {
     }
 
     const admin = result.rows[0];
+    const isMatch = verifyPassword(password.trim(), admin.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
+    }
+
+    // Auto-upgrade legacy plain text password to cryptographic scrypt hash in the database
+    if (admin.password && !admin.password.includes(':')) {
+      try {
+        const secureHash = hashPassword(password.trim());
+        await pool.query('UPDATE admins SET password = $1 WHERE id = $2', [secureHash, admin.id]);
+        console.log(`[Security] Upgraded legacy plain text password to scrypt hash for admin: ${admin.username}`);
+      } catch (upgradeErr) {
+        console.error('[Security] Note: Could not auto-upgrade password hash in DB:', upgradeErr.message);
+      }
+    }
+
     res.json({
       success: true,
       message: 'Login successful!',

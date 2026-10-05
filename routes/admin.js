@@ -1,5 +1,6 @@
 import express from 'express';
 import { pool } from '../config/db.js';
+import { verifyPassword, hashPassword } from '../utils/security.js';
 
 const router = express.Router();
 
@@ -54,8 +55,8 @@ router.post('/change-password', async (req, res) => {
 
     // Verify current credentials against DB
     const adminCheck = await pool.query(
-      'SELECT id, username, password FROM admins WHERE username = $1 AND password = $2',
-      [current_username.trim(), current_password.trim()]
+      'SELECT id, username, password FROM admins WHERE username = $1',
+      [current_username.trim()]
     );
 
     if (adminCheck.rows.length === 0) {
@@ -65,12 +66,23 @@ router.post('/change-password', async (req, res) => {
       });
     }
 
-    const adminId = adminCheck.rows[0].id;
+    const admin = adminCheck.rows[0];
+    const isMatch = verifyPassword(current_password.trim(), admin.password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Current username or password is incorrect.'
+      });
+    }
+
+    const adminId = admin.id;
     const finalUsername = new_username && new_username.trim() ? new_username.trim() : current_username.trim();
+    const secureHash = hashPassword(new_password.trim());
 
     await pool.query(
       'UPDATE admins SET username = $1, password = $2 WHERE id = $3',
-      [finalUsername, new_password.trim(), adminId]
+      [finalUsername, secureHash, adminId]
     );
 
     res.json({
