@@ -11,7 +11,7 @@ import ImageModal from '../components/ImageModal';
 
 export default function Admin() {
   const [token, setToken] = useState(localStorage.getItem('abyssi_admin_token') || null);
-  const [username, setUsername] = useState('admin');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
   const [showLoginPass, setShowLoginPass] = useState(false);
@@ -518,8 +518,10 @@ export default function Admin() {
                 type="text"
                 required
                 value={username}
+                placeholder="Enter username"
+                autoComplete="off"
                 onChange={e => setUsername(e.target.value)}
-                className="w-full px-4 py-3 rounded-2xl bg-stone-950/90 border border-stone-800 text-white text-xs font-medium focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 focus:outline-none transition-all"
+                className="w-full px-4 py-3 rounded-2xl bg-stone-950/90 border border-stone-800 text-white text-xs font-medium focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 focus:outline-none transition-all placeholder:text-stone-600"
               />
             </div>
 
@@ -530,8 +532,10 @@ export default function Admin() {
                   type={showLoginPass ? 'text' : 'password'}
                   required
                   value={password}
+                  placeholder="Enter password"
+                  autoComplete="new-password"
                   onChange={e => setPassword(e.target.value)}
-                  className="w-full pl-4 pr-11 py-3 rounded-2xl bg-stone-950/90 border border-stone-800 text-white text-xs font-medium focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 focus:outline-none transition-all"
+                  className="w-full pl-4 pr-11 py-3 rounded-2xl bg-stone-950/90 border border-stone-800 text-white text-xs font-medium focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 focus:outline-none transition-all placeholder:text-stone-600"
                 />
                 <button
                   type="button"
